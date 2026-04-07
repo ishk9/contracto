@@ -607,7 +607,7 @@
         "id": "11",
         "title": "Server - Setup, Config & DI Container",
         "description": "Set up the server package with Fastify, configuration loading via cosmiconfig, and the dependency injection container that wires all components together.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "10"
         ],
@@ -652,13 +652,14 @@
             ],
             "parentId": "11"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:27:27.209Z"
       },
       {
         "id": "12",
         "title": "Server - EventBus (Observer Pattern)",
         "description": "Implement the typed EventBus for decoupling ingestion, drift detection, and alerting within the server process.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "11"
         ],
@@ -684,13 +685,14 @@
             ],
             "parentId": "12"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:27:27.211Z"
       },
       {
         "id": "13",
         "title": "Server - SQLite Store Layer",
         "description": "Implement the SQLite connection manager, migration runner, and all 4 repository classes (ContractStore, SampleStore, DriftStore, ConsumerDepStore) with the StoreFactory.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "11"
         ],
@@ -769,13 +771,14 @@
             ],
             "parentId": "13"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:27:27.213Z"
       },
       {
         "id": "14",
         "title": "Server - Ingestion Service",
         "description": "Implement the IngestionService that processes incoming SDK batches, stores shapes and samples, and emits events for drift detection.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "12",
           "13"
@@ -811,13 +814,14 @@
             ],
             "parentId": "14"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:31:41.971Z"
       },
       {
         "id": "15",
         "title": "Server - API Routes",
         "description": "Implement all Fastify route handlers: ingest routes (POST /ingest/provider and /ingest/consumer), query routes (GET /contracts, /graph, /drift), action routes (POST /drift/:id/acknowledge), and health check.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "14"
         ],
@@ -875,13 +879,14 @@
             "dependencies": [],
             "parentId": "15"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:31:41.976Z"
       },
       {
         "id": "16",
         "title": "Server - Scheduler & Background Jobs",
         "description": "Implement the Scheduler and all background jobs: contract inference, drift resolution, sample pruning, stale consumer cleanup.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "13",
           "12"
@@ -918,13 +923,14 @@
             ],
             "parentId": "16"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:31:41.977Z"
       },
       {
         "id": "17",
         "title": "Server - Alert System",
         "description": "Implement AlertRouter, alert channel implementations (Slack, PagerDuty, generic Webhook), message formatters, and AlertChannelFactory.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "12"
         ],
@@ -960,13 +966,14 @@
             ],
             "parentId": "17"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:31:41.979Z"
       },
       {
         "id": "18",
         "title": "Server - Integration Tests",
         "description": "Write integration tests for the full server pipeline: SDK batch → ingestion → inference → drift detection → alert.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "15",
           "16",
@@ -994,7 +1001,8 @@
             ],
             "parentId": "18"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:34:07.455Z"
       },
       {
         "id": "19",
@@ -1353,9 +1361,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-07T05:16:35.515Z",
+      "lastModified": "2026-04-07T05:34:07.455Z",
       "taskCount": 27,
-      "completedCount": 10,
+      "completedCount": 18,
       "tags": [
         "master"
       ]

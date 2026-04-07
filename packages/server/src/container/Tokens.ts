@@ -1,0 +1,15 @@
+export const Tokens = {
+  EventBus: 'EventBus',
+  ContractStore: 'IContractStore',
+  SampleStore: 'ISampleStore',
+  DriftStore: 'IDriftStore',
+  ConsumerDepStore: 'IConsumerDepStore',
+  AlertRouter: 'AlertRouter',
+  Scheduler: 'IScheduler',
+  ShapeExtractor: 'IShapeExtractor',
+  SchemaInferrer: 'ISchemaInferrer',
+  DriftDetector: 'IDriftDetector',
+  Fingerprinter: 'IFingerprinter',
+  IngestionService: 'IngestionService',
+  Config: 'ServerConfig',
+} as const;

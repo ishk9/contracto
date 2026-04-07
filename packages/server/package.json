@@ -4,12 +4,12 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "contractcheck-server": "./dist/index.js"
+    "contractcheck-server": "./dist/main.js"
   },
   "scripts": {
     "build": "tsup",
-    "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.js",
+    "dev": "tsx watch src/main.ts",
+    "start": "node dist/main.js",
     "test": "vitest run"
   },
   "dependencies": {
