@@ -1,0 +1,19 @@
+{
+  "name": "@contractcheck/express",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist/"],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@contractcheck/core": "*",
+    "hash-wasm": "^4.0.0"
+  },
+  "peerDependencies": {
+    "express": ">=4.0.0"
+  }
+}

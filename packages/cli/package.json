@@ -1,0 +1,18 @@
+{
+  "name": "contractcheck",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "contractcheck": "./dist/bin/contractcheck.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@contractcheck/core": "*",
+    "commander": "^13.0.0",
+    "chalk": "^5.0.0",
+    "cli-table3": "^0.6.0"
+  }
+}

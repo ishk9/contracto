@@ -1,0 +1,1364 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": "1",
+        "title": "Initialize Monorepo & Project Structure",
+        "description": "Set up the npm workspaces monorepo with 4 packages (core, server, cli, sdk-express), configure TypeScript, ESLint, Prettier, Vitest, tsup, and create the full directory tree from the architecture doc.",
+        "status": "done",
+        "dependencies": [],
+        "priority": "high",
+        "details": "Create the project at /Users/ishk9/Desktop/projects/contracto. Use npm workspaces with packages/* glob. All packages share a base tsconfig.json. Each package has its own tsconfig.json extending the base. tsup is used for building. Vitest for testing. ESLint + Prettier for linting. Node.js 22 LTS target. ES2022 + NodeNext module resolution.",
+        "testStrategy": "Run `npm install` — must succeed. Run `npm run build` in each package — must compile with zero errors. Verify all directories from architecture doc exist.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create root package.json with npm workspaces",
+            "description": "Create package.json at project root. Set name to 'contractcheck-monorepo', private: true, workspaces: ['packages/*']. Add root scripts: 'build': 'npm run build --workspaces', 'test': 'vitest run', 'lint': 'eslint packages/', 'format': 'prettier --write packages/'. Set engines: { node: '>=22.0.0' }, type: 'module'.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "1"
+          },
+          {
+            "id": 2,
+            "title": "Create tsconfig.base.json with shared compiler options",
+            "description": "Create tsconfig.base.json at root with: target ES2022, module NodeNext, moduleResolution NodeNext, strict true, esModuleInterop true, skipLibCheck true, forceConsistentCasingInFileNames true, resolveJsonModule true, declaration true, declarationMap true, sourceMap true, isolatedModules true. Do NOT set outDir/rootDir here — each package sets those.",
+            "status": "pending",
+            "dependencies": [
+              "1.1"
+            ],
+            "parentId": "1"
+          },
+          {
+            "id": 3,
+            "title": "Create packages/core/ skeleton",
+            "description": "Create packages/core/package.json: name '@contractcheck/core', version '0.1.0', type 'module', main 'dist/index.js', types 'dist/index.d.ts', scripts: { build: 'tsup', test: 'vitest run' }, files: ['dist/']. Create packages/core/tsconfig.json extending ../../tsconfig.base.json with outDir 'dist', rootDir 'src', include ['src/**/*']. Create packages/core/tsup.config.ts: entry ['src/index.ts'], format ['esm'], dts true, clean true. Create full src/ directory tree: src/index.ts, src/interfaces/, src/types/, src/extraction/, src/inference/, src/drift/, src/parameterization/, src/visitors/. Add placeholder index.ts in each directory with empty exports.",
+            "status": "pending",
+            "dependencies": [
+              "1.2"
+            ],
+            "parentId": "1"
+          },
+          {
+            "id": 4,
+            "title": "Create packages/server/ skeleton",
+            "description": "Create packages/server/package.json: name '@contractcheck/server', version '0.1.0', type 'module', main 'dist/index.js', bin: { 'contractcheck-server': './dist/index.js' }, dependencies on @contractcheck/core (workspace:*), fastify, better-sqlite3, cosmiconfig. Scripts: build, dev (tsx watch src/index.ts), start. Create tsconfig.json and tsup.config.ts. Create full src/ directory tree: src/index.ts, src/interfaces/, src/config/, src/container/, src/store/sqlite/, src/store/sqlite/migrations/, src/ingestion/, src/events/, src/alerting/channels/, src/alerting/formatters/, src/scheduler/jobs/, src/routes/, src/routes/schemas/.",
+            "status": "pending",
+            "dependencies": [
+              "1.2"
+            ],
+            "parentId": "1"
+          },
+          {
+            "id": 5,
+            "title": "Create packages/cli/ skeleton",
+            "description": "Create packages/cli/package.json: name 'contractcheck', version '0.1.0', type 'module', bin: { contractcheck: './dist/bin/contractcheck.js' }, dependencies on @contractcheck/core (workspace:*), commander, chalk, cli-table3. Create tsconfig.json and tsup.config.ts (entry: ['src/index.ts', 'bin/contractcheck.ts']). Create src/ tree: src/index.ts, src/interfaces/, src/commands/, src/api/, src/renderers/. Create bin/contractcheck.ts with shebang #!/usr/bin/env node.",
+            "status": "pending",
+            "dependencies": [
+              "1.2"
+            ],
+            "parentId": "1"
+          },
+          {
+            "id": 6,
+            "title": "Create packages/sdk-express/ skeleton",
+            "description": "Create packages/sdk-express/package.json: name '@contractcheck/express', version '0.1.0', type 'module', main 'dist/index.js', types 'dist/index.d.ts', dependencies on @contractcheck/core (workspace:*), hash-wasm. peerDependencies: express >=4.0.0. Create tsconfig.json and tsup.config.ts. Create src/ tree: src/index.ts, src/interfaces/, src/middleware/, src/tracking/, src/pipeline/, src/transport/, src/reporter/.",
+            "status": "pending",
+            "dependencies": [
+              "1.2"
+            ],
+            "parentId": "1"
+          },
+          {
+            "id": 7,
+            "title": "Install all dependencies",
+            "description": "From project root, run npm install to bootstrap all workspaces. Install root dev dependencies: typescript, vitest, @vitest/coverage-v8, eslint, prettier, tsup, tsx, @types/node. Install per-package dependencies as specified in each package.json. Verify npm ls --all shows no peer dependency warnings.",
+            "status": "pending",
+            "dependencies": [
+              "1.3",
+              "1.4",
+              "1.5",
+              "1.6"
+            ],
+            "parentId": "1"
+          },
+          {
+            "id": 8,
+            "title": "Create vitest.workspace.ts and .eslintrc.js and .prettierrc",
+            "description": "Create vitest.workspace.ts at root: defineWorkspace(['packages/*/vitest.config.ts']). Create vitest.config.ts in each package with test include pattern. Create .eslintrc.js with TypeScript ESLint config. Create .prettierrc with singleQuote true, trailingComma 'all', printWidth 100, semi true. Create .gitignore with node_modules/, dist/, *.db, .env.",
+            "status": "pending",
+            "dependencies": [
+              "1.7"
+            ],
+            "parentId": "1"
+          },
+          {
+            "id": 9,
+            "title": "Verify build and workspace linking",
+            "description": "Run npm run build from root — all 4 packages must compile with zero TypeScript errors. Verify @contractcheck/core is importable from server, cli, and sdk-express packages. Run npm test — must pass (no tests yet, but runner must work). Run npx contractcheck --help from root — should show Commander.js default help.",
+            "status": "pending",
+            "dependencies": [
+              "1.8"
+            ],
+            "parentId": "1"
+          }
+        ],
+        "updatedAt": "2026-04-06T13:07:46.161Z"
+      },
+      {
+        "id": "2",
+        "title": "Core - Type Definitions & Enums",
+        "description": "Create all shared TypeScript types, interfaces, and enums in packages/core/src/types/. These are the data structures that every other module depends on: ShapeNode, ContractSchema, DriftEvent, Sample types, Config types.",
+        "status": "done",
+        "dependencies": [
+          "1"
+        ],
+        "priority": "high",
+        "details": "All types must be readonly/immutable value objects. Use discriminated unions for ShapeNode (_type field). Use const enums for DriftChangeType. Export everything from types/index.ts.",
+        "testStrategy": "TypeScript compiles with zero errors. Import all types in a test file and construct mock objects that satisfy each interface.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create ShapeNode types (types/ShapeNode.ts)",
+            "description": "Define: type ShapeNode = 'string' | 'number' | 'boolean' | 'null' | 'undefined' | 'unknown' | ShapeObject | ShapeArray | ShapeUnion. Define ShapeObject with readonly _type: 'object' and readonly fields: Readonly<Record<string, ShapeNode>>. Define ShapeArray with readonly _type: 'array' and readonly items: ShapeNode. Define ShapeUnion with readonly _type: 'union' and readonly variants: readonly ShapeNode[]. Add type guard functions: isShapeObject(node), isShapeArray(node), isShapeUnion(node), isPrimitive(node). Export all.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "2"
+          },
+          {
+            "id": 2,
+            "title": "Create ContractSchema types (types/ContractSchema.ts)",
+            "description": "Define: ContractSchema with readonly _type: 'object' and readonly fields: Readonly<Record<string, FieldSchema>>. Define FieldSchema with: readonly types: readonly TypeFrequency[], readonly presence: number (0.0-1.0), readonly required: boolean, readonly nullable: boolean, readonly enumValues?: readonly string[], readonly nested?: ContractSchema, readonly arrayItems?: FieldSchema, readonly sampleCount: number. Define TypeFrequency with readonly type: string, readonly count: number, readonly percentage: number. Define ContractStatus type = 'learning' | 'stable' | 'drifting'. Define Contract interface with id, provider, endpoint, method, schema (ContractSchema), sampleCount, confidence, status (ContractStatus), createdAt, updatedAt.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "2"
+          },
+          {
+            "id": 3,
+            "title": "Create DriftEvent types (types/DriftEvent.ts)",
+            "description": "Define DriftChangeType enum with all 12 values: FIELD_ADDED, FIELD_REMOVED, TYPE_CHANGED, NULLABLE_ADDED, NULLABLE_REMOVED, ENUM_VALUE_ADDED, ENUM_VALUE_REMOVED, REQUIRED_TO_OPTIONAL, OPTIONAL_TO_REQUIRED, NESTED_SHAPE_CHANGED, STRUCTURAL_CHANGE, STATUS_CODE_CHANGED. Define Severity type = 'info' | 'warning' | 'breaking' | 'critical'. Define DriftStatus type = 'pending' | 'active' | 'acknowledged' | 'resolved'. Define DriftDetails with readonly before, after, description strings. Define ConsumerImpact with readonly consumer, field, sampleCount, lastSeen. Define DriftEvent with all fields from architecture doc (readonly). Define ConsumerDep with consumer, provider, endpoint, method, fieldsAccessed (string[]), sampleCount, firstSeen, lastSeen.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "2"
+          },
+          {
+            "id": 4,
+            "title": "Create Sample types (types/Sample.ts)",
+            "description": "Define ProviderSample with endpoint, statusCode, shapeFingerprint, shape (ShapeNode | undefined), caller (string | null), count, timestamp. Define ProviderBatch with sdk_version, service, samples (ProviderSample[]). Define ConsumerAccess with provider, endpoint, fieldsAccessed (string[]), count, timestamp. Define ConsumerBatch with sdk_version, service, accesses (ConsumerAccess[]). Define SampleAggregate with id, provider, endpoint, method, shapeFingerprint, caller, statusCode, count, firstSeen, lastSeen.",
+            "status": "pending",
+            "dependencies": [
+              "2.1"
+            ],
+            "parentId": "2"
+          },
+          {
+            "id": 5,
+            "title": "Create Config types (types/Config.ts)",
+            "description": "Define InferenceConfig with minSamplesForStable (default 50), requiredPresenceThreshold (default 0.95), enumMaxCardinality (default 20), maxDepth (default 10). Define DriftConfig with minConfirmSamples (default 10), gracePeriodSeconds (default 300), autoResolveAfterHours (default 72). Define TransportConfig with type ('http' | 'sqs' | 'kafka' | 'noop'), url?, queueUrl?, brokers?, topic?, timeout? (default 3000). Define SDKConfig with service, serverUrl, role ('provider' | 'consumer' | 'both'), sampleRate (default 0.01), redact (string[]).",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "2"
+          },
+          {
+            "id": 6,
+            "title": "Create barrel export (types/index.ts and core index.ts)",
+            "description": "Re-export everything from ShapeNode.ts, ContractSchema.ts, DriftEvent.ts, Sample.ts, Config.ts via types/index.ts. Then re-export types/index.ts from the top-level core src/index.ts. Verify build compiles and all types are importable from '@contractcheck/core'.",
+            "status": "pending",
+            "dependencies": [
+              "2.1",
+              "2.2",
+              "2.3",
+              "2.4",
+              "2.5"
+            ],
+            "parentId": "2"
+          }
+        ],
+        "updatedAt": "2026-04-06T13:10:12.924Z"
+      },
+      {
+        "id": "3",
+        "title": "Core - Interface Definitions",
+        "description": "Create all abstraction interfaces in packages/core/src/interfaces/. These define the contracts between modules and enable dependency inversion. Every implementation depends on these interfaces, never on concrete classes.",
+        "status": "done",
+        "dependencies": [
+          "2"
+        ],
+        "priority": "high",
+        "details": "Each interface lives in its own file. All are exported from interfaces/index.ts. Interfaces should be minimal (Interface Segregation) — no method a consumer doesn't need.",
+        "testStrategy": "TypeScript compiles with zero errors. All interfaces are importable from '@contractcheck/core'.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create IShapeExtractor interface",
+            "description": "Define in interfaces/IShapeExtractor.ts: interface IShapeExtractor { extract(value: unknown): ShapeNode; }. Import ShapeNode from ../types.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "3"
+          },
+          {
+            "id": 2,
+            "title": "Create IShapeMerger interface",
+            "description": "Define in interfaces/IShapeMerger.ts: interface IShapeMerger { merge(nodes: ShapeNode[]): ShapeNode; }.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "3"
+          },
+          {
+            "id": 3,
+            "title": "Create IFingerprinter interface",
+            "description": "Define in interfaces/IFingerprinter.ts: interface IFingerprinter { fingerprint(shape: ShapeNode): Promise<string>; }. Note: async because hash-wasm's xxhash64() returns Promise<string>.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "3"
+          },
+          {
+            "id": 4,
+            "title": "Create IRedactor interface",
+            "description": "Define in interfaces/IRedactor.ts: interface IRedactor { redact(obj: Record<string, unknown>): Record<string, unknown>; }.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "3"
+          },
+          {
+            "id": 5,
+            "title": "Create ISchemaInferrer interface",
+            "description": "Define in interfaces/ISchemaInferrer.ts: interface ISchemaInferrer { infer(shapes: ShapeNode[], config: InferenceConfig): ContractSchema; update(existing: ContractSchema, newShapes: ShapeNode[], config: InferenceConfig): ContractSchema; }.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "3"
+          },
+          {
+            "id": 6,
+            "title": "Create IDriftDetector interface",
+            "description": "Define in interfaces/IDriftDetector.ts: interface IDriftDetector { detect(baseline: ContractSchema, incoming: ShapeNode, consumerDeps: ConsumerDep[]): DriftEvent[]; }.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "3"
+          },
+          {
+            "id": 7,
+            "title": "Create IShapeVisitor interface",
+            "description": "Define in interfaces/IShapeVisitor.ts: interface IShapeVisitor<T> { visitPrimitive(node: string, path: string): T; visitObject(node: ShapeObject, path: string): T; visitArray(node: ShapeArray, path: string): T; visitUnion(node: ShapeUnion, path: string): T; }. Also define the standalone function: function acceptVisitor<T>(node: ShapeNode, visitor: IShapeVisitor<T>, path?: string): T.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "3"
+          },
+          {
+            "id": 8,
+            "title": "Create interfaces barrel export",
+            "description": "Re-export all 7 interfaces from interfaces/index.ts. Add to core src/index.ts barrel export. Verify build.",
+            "status": "pending",
+            "dependencies": [
+              "3.1",
+              "3.2",
+              "3.3",
+              "3.4",
+              "3.5",
+              "3.6",
+              "3.7"
+            ],
+            "parentId": "3"
+          }
+        ],
+        "updatedAt": "2026-04-06T13:10:12.928Z"
+      },
+      {
+        "id": "4",
+        "title": "Core - Shape Extraction & Merging",
+        "description": "Implement ShapeExtractor and ShapeMerger in packages/core/src/extraction/. ShapeExtractor converts any JSON value into a ShapeNode tree. ShapeMerger combines multiple ShapeNodes (used for array items with different shapes).",
+        "status": "done",
+        "dependencies": [
+          "3"
+        ],
+        "priority": "high",
+        "details": "ShapeExtractor must handle: primitives (string, number, boolean), null, undefined, objects (recursive), arrays (sample first 10 items, merge their shapes), depth limiting (max 10 levels, configurable). ShapeMerger must handle: all-same-primitive → that primitive, all-objects → merge field sets, mixed → union. Performance target: < 50μs for 20-field response, < 500μs for 200-field nested response.",
+        "testStrategy": "Unit tests with fixed JSON inputs covering: flat objects, nested objects, arrays of primitives, arrays of mixed objects, null fields, empty arrays, empty objects, deeply nested structures (> 10 levels to test depth limiting).",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement ShapeExtractor class",
+            "description": "Create extraction/ShapeExtractor.ts implementing IShapeExtractor. Constructor accepts optional maxDepth (default 10). The extract() method: if null return 'null', if undefined return 'undefined', if string/number/boolean return typeof, if Array call _extractArray(), if object call _extractObject(). _extractObject iterates Object.keys and recurses. _extractArray takes first 10 items, extracts each, passes to ShapeMerger. Track current depth — at maxDepth emit 'object' or 'array' as leaf type without recursing.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "4"
+          },
+          {
+            "id": 2,
+            "title": "Implement ShapeMerger class",
+            "description": "Create extraction/ShapeMerger.ts implementing IShapeMerger. The merge() method: 1) separate primitives (typeof === 'string') from complex nodes. 2) If all primitives and all identical → return that primitive. 3) If all primitives but different → return ShapeUnion with unique variants. 4) If all ShapeObjects → collect all keys across all objects, for each key collect the shapes from objects that have it, recursively merge. 5) If all ShapeArrays → merge their items. 6) Mixed types → ShapeUnion. Handle edge case: single-item array → return that item directly, no merging needed.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "4"
+          },
+          {
+            "id": 3,
+            "title": "Wire ShapeExtractor to use ShapeMerger and export from core",
+            "description": "ShapeExtractor constructor should accept an IShapeMerger instance (dependency injection). Default to new ShapeMerger() if not provided. Export both classes from extraction/index.ts. Add to core src/index.ts barrel export. Verify build.",
+            "status": "pending",
+            "dependencies": [
+              "4.1",
+              "4.2"
+            ],
+            "parentId": "4"
+          }
+        ],
+        "updatedAt": "2026-04-06T13:12:15.762Z"
+      },
+      {
+        "id": "5",
+        "title": "Core - Redaction & Fingerprinting",
+        "description": "Implement Redactor (strips sensitive field names before shape extraction) and Fingerprinter (produces xxHash64 fingerprint of a shape for deduplication).",
+        "status": "done",
+        "dependencies": [
+          "3"
+        ],
+        "priority": "high",
+        "details": "Redactor operates on field names (case-insensitive), not values. It recursively walks objects and removes matching keys. Fingerprinter uses hash-wasm's xxhash64() function. It must produce deterministic output — canonicalize the shape JSON (sort keys) before hashing. The fingerprint is async because hash-wasm returns a Promise.",
+        "testStrategy": "Redactor: test that redacted fields are removed from flat and nested objects, case-insensitive matching works, arrays are preserved, non-matching fields are untouched. Fingerprinter: test that identical shapes produce identical fingerprints, different key order produces identical fingerprints, different shapes produce different fingerprints.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Redactor class",
+            "description": "Create extraction/Redactor.ts implementing IRedactor. Constructor accepts redactKeys: string[] and stores them as a Set<string> (lowercased). The redact() method recursively walks the object. For each key, if key.toLowerCase() is in the redact set, skip it. If the value is a non-null, non-array object, recurse. Return the cleaned object. Do NOT mutate the input — create new objects.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "5"
+          },
+          {
+            "id": 2,
+            "title": "Implement Fingerprinter class",
+            "description": "Create extraction/Fingerprinter.ts implementing IFingerprinter. The fingerprint() method: 1) canonicalize the ShapeNode to a deterministic string using a private canonicalize() method. For primitives (strings like 'string', 'number'), JSON.stringify them. For ShapeObject, sort keys alphabetically, recursively canonicalize each field value, produce '{key1:val1,key2:val2}'. For ShapeArray, produce '[items]'. For ShapeUnion, sort variants' canonical forms, produce '(v1|v2)'. 2) Pass the canonical string to hash-wasm's xxhash64() function (import { xxhash64 } from 'hash-wasm'). Return the hex hash string. Install hash-wasm as a dependency of @contractcheck/core.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "5"
+          },
+          {
+            "id": 3,
+            "title": "Export Redactor and Fingerprinter from core",
+            "description": "Add both to extraction/index.ts exports. Add to core src/index.ts barrel. Verify build with hash-wasm installed.",
+            "status": "pending",
+            "dependencies": [
+              "5.1",
+              "5.2"
+            ],
+            "parentId": "5"
+          }
+        ],
+        "updatedAt": "2026-04-06T13:12:15.764Z"
+      },
+      {
+        "id": "6",
+        "title": "Core - Shape Visitors",
+        "description": "Implement the Visitor pattern for ShapeNode traversal. Create ShapeFlattener (dot-path field list), ShapeSerializer (canonical JSON), and ShapePrinter (human-readable summary).",
+        "status": "done",
+        "dependencies": [
+          "4"
+        ],
+        "priority": "medium",
+        "details": "The acceptVisitor() function dispatches based on ShapeNode type. Each visitor implements IShapeVisitor<T> with a different return type. ShapeFlattener returns string[] of dot-paths. ShapeSerializer returns a canonical string. ShapePrinter returns a human-readable one-liner.",
+        "testStrategy": "Test each visitor with nested shapes. ShapeFlattener: verify dot-paths include nested fields (address.city) and array items (orders[].id). ShapeSerializer: verify deterministic output. ShapePrinter: verify readable output.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement acceptVisitor dispatch function",
+            "description": "In visitors/ or interfaces/IShapeVisitor.ts, implement the standalone acceptVisitor<T>(node, visitor, path) function. Use type guards: if isPrimitive → visitPrimitive, if isShapeObject → visitObject, if isShapeArray → visitArray, if isShapeUnion → visitUnion.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "6"
+          },
+          {
+            "id": 2,
+            "title": "Implement ShapeFlattener visitor",
+            "description": "Create visitors/ShapeFlattener.ts implementing IShapeVisitor<string[]>. visitPrimitive: return [path] if path is non-empty, else []. visitObject: iterate fields, for each field create childPath (path ? path.fieldName : fieldName), push childPath, then recurse via acceptVisitor and concat results. visitArray: recurse into items with path '${path}[]'. visitUnion: flatMap variants through acceptVisitor.",
+            "status": "pending",
+            "dependencies": [
+              "6.1"
+            ],
+            "parentId": "6"
+          },
+          {
+            "id": 3,
+            "title": "Implement ShapeSerializer and ShapePrinter visitors",
+            "description": "ShapeSerializer: same logic as Fingerprinter.canonicalize() but as a visitor (visitPrimitive returns JSON.stringify(node), visitObject sorts keys and formats, etc.). ShapePrinter: visitPrimitive returns the type name, visitObject returns '{ field1: type, field2: type, ... }' (truncated if > 5 fields), visitArray returns 'type[]', visitUnion returns 'type1 | type2'. Export all from visitors/index.ts and core barrel.",
+            "status": "pending",
+            "dependencies": [
+              "6.1"
+            ],
+            "parentId": "6"
+          }
+        ],
+        "updatedAt": "2026-04-06T13:12:15.765Z"
+      },
+      {
+        "id": "7",
+        "title": "Core - Schema Inference Engine",
+        "description": "Implement the SchemaInferrer that builds a ContractSchema from accumulated shape samples. Includes FieldStatsAccumulator for incremental tracking, EnumDetector for low-cardinality string detection, and ContractSchemaBuilder.",
+        "status": "done",
+        "dependencies": [
+          "4",
+          "6"
+        ],
+        "priority": "high",
+        "details": "The inferrer receives an array of ShapeNode samples for an endpoint and produces a ContractSchema. For each field path: count presence (how many samples contain it), collect type frequencies, detect nullable (null appears), detect enums (string with <= 20 distinct values over >= 100 samples). FieldStatsAccumulator maintains running counters so inference can be incremental. ContractSchemaBuilder uses the Builder pattern to construct the final immutable ContractSchema.",
+        "testStrategy": "Test with: 3 samples (basic inference), 100+ samples (enum detection triggers), samples with optional fields (presence < 0.95), samples with nullable fields, deeply nested structures, arrays with item schemas. Verify required/optional/nullable/enum flags are set correctly.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement FieldStatsAccumulator",
+            "description": "Create inference/FieldStatsAccumulator.ts. This maintains per-field running statistics. Data structure: Map<string, FieldStats> where key is the dot-path and FieldStats = { totalSamples: number, presentCount: number, typeCounts: Map<string, number>, distinctStringValues: Set<string> (capped at 100 entries) }. Methods: addShape(shape: ShapeNode, path?: string) — recursively walk the shape, for each field increment presentCount and typeCounts. incrementTotal() — increment totalSamples. getStats(path: string): FieldStats. getAllPaths(): string[]. Use the ShapeFlattener internally to enumerate all paths in a shape.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "7"
+          },
+          {
+            "id": 2,
+            "title": "Implement EnumDetector",
+            "description": "Create inference/EnumDetector.ts. Method: detect(stats: FieldStats, config: InferenceConfig): string[] | undefined. Logic: if the field's primary type is 'string', and distinctStringValues.size <= config.enumMaxCardinality (default 20), and stats.totalSamples >= 100, return the sorted array of distinct values. Otherwise return undefined. This is a pure function with no state.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "7"
+          },
+          {
+            "id": 3,
+            "title": "Implement ContractSchemaBuilder",
+            "description": "Create inference/ContractSchemaBuilder.ts. Builder pattern for ContractSchema. Methods: addField(path: string, schema: FieldSchema): this. Build ContractSchema from a Map<string, FieldStats> by: for each top-level field, create a FieldSchema with types (from typeCounts, converted to TypeFrequency[]), presence (presentCount / totalSamples), required (presence >= config threshold), nullable ('null' in typeCounts), enumValues (from EnumDetector), nested (recurse for object fields), arrayItems (for array fields). build(): ContractSchema — returns the immutable object.",
+            "status": "pending",
+            "dependencies": [
+              "7.2"
+            ],
+            "parentId": "7"
+          },
+          {
+            "id": 4,
+            "title": "Implement SchemaInferrer class",
+            "description": "Create inference/SchemaInferrer.ts implementing ISchemaInferrer. The infer(shapes, config) method: 1) create FieldStatsAccumulator, 2) for each shape, call accumulator.addShape(shape) and accumulator.incrementTotal(), 3) use ContractSchemaBuilder to build the schema from accumulated stats. The update(existing, newShapes, config) method: merge new shapes into the existing stats (need to reconstruct stats from existing schema + new data — or accept that update re-infers from all shapes). Export from inference/index.ts and core barrel.",
+            "status": "pending",
+            "dependencies": [
+              "7.1",
+              "7.3"
+            ],
+            "parentId": "7"
+          }
+        ],
+        "updatedAt": "2026-04-06T13:15:46.473Z"
+      },
+      {
+        "id": "8",
+        "title": "Core - Drift Detection & Classification",
+        "description": "Implement DriftDetector, ShapeDiffer, SeverityClassifier, and DriftEventBuilder. Compares incoming shapes against baseline contracts and produces classified drift events.",
+        "status": "done",
+        "dependencies": [
+          "7"
+        ],
+        "priority": "high",
+        "details": "ShapeDiffer recursively compares a ContractSchema (baseline) against an incoming ShapeNode and produces a list of diffs. SeverityClassifier maps each diff type + consumer count to a severity level. DriftEventBuilder constructs the final DriftEvent. DriftDetector orchestrates: diff → classify → build events → filter by affected consumers.",
+        "testStrategy": "Test each drift type individually: field removed, field added, type changed, nullable added/removed, enum value added/removed, required→optional, structural change. Test with 0, 1, and multiple affected consumers — verify severity changes. Test nested field diffs. Test that unaffected field changes produce 'info' severity.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement ShapeDiffer",
+            "description": "Create drift/ShapeDiffer.ts. Method: diff(baseline: ContractSchema, incoming: ShapeNode, path: string, callback: DiffCallback). DiffCallback = (path: string, changeType: DriftChangeType, details: DriftDetails) => void. Logic: 1) if incoming is not an object → STRUCTURAL_CHANGE. 2) For each field in baseline.fields: if missing in incoming and field.required → FIELD_REMOVED. If present, compare types: different type → TYPE_CHANGED, null where not nullable → NULLABLE_ADDED. If field has nested schema and incoming field is object → recurse. 3) For each field in incoming not in baseline → FIELD_ADDED. Handle enum detection: if baseline field has enumValues and incoming value type is string, check if enum values match.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "8"
+          },
+          {
+            "id": 2,
+            "title": "Implement SeverityClassifier",
+            "description": "Create drift/SeverityClassifier.ts. Method: classify(changeType: DriftChangeType, affectedConsumerCount: number): Severity. Rules: STRUCTURAL_CHANGE → always 'critical'. FIELD_REMOVED, TYPE_CHANGED, REQUIRED_TO_OPTIONAL, ENUM_VALUE_REMOVED, NESTED_SHAPE_CHANGED → 'breaking' if consumers > 0, else 'warning'. NULLABLE_ADDED, ENUM_VALUE_ADDED, STATUS_CODE_CHANGED → 'warning'. FIELD_ADDED, NULLABLE_REMOVED, OPTIONAL_TO_REQUIRED → 'info'. This is a pure static method, no state.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "8"
+          },
+          {
+            "id": 3,
+            "title": "Implement DriftEventBuilder",
+            "description": "Create drift/DriftEventBuilder.ts. Builder pattern with methods: static create(), withId(id), withProvider(p), withEndpoint(e), withMethod(m), withChangeType(t), withSeverity(s), withField(f), withDetails(d), withConsumers(c). build() validates all required fields are set (throws if any missing), sets defaults: confirmationCount=1, status='pending', firstSeen/lastSeen=now. Returns frozen DriftEvent object.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "8"
+          },
+          {
+            "id": 4,
+            "title": "Implement DriftDetector class",
+            "description": "Create drift/DriftDetector.ts implementing IDriftDetector. The detect(baseline, incoming, consumerDeps) method: 1) instantiate ShapeDiffer, 2) collect all diffs via callback, 3) for each diff: find affected consumers by matching diff.path against consumerDeps[].fieldsAccessed (exact match or prefix match for nested fields), 4) classify severity via SeverityClassifier, 5) build DriftEvent via DriftEventBuilder with a generated id. Return DriftEvent[]. Export from drift/index.ts and core barrel.",
+            "status": "pending",
+            "dependencies": [
+              "8.1",
+              "8.2",
+              "8.3"
+            ],
+            "parentId": "8"
+          }
+        ],
+        "updatedAt": "2026-04-06T13:15:46.474Z"
+      },
+      {
+        "id": "9",
+        "title": "Core - Endpoint Parameterization",
+        "description": "Implement EndpointParameterizer and SegmentClassifier. Collapses raw paths like /users/123 and /users/456 into /users/:id.",
+        "status": "done",
+        "dependencies": [
+          "2"
+        ],
+        "priority": "medium",
+        "details": "Group paths by method + segment count. For each segment position, if all values are identical → literal. If all numeric → :id. If all UUIDs → :id. If all match a version pattern (v1, v2) → preserve as literal. Otherwise → :param{index}. SegmentClassifier has static methods: isNumeric, isUuid, isVersion.",
+        "testStrategy": "Test: /users/123 + /users/456 → /users/:id. UUID paths. Nested resources /users/123/orders/456. Version prefixes /v1/users/123. Slug paths. Mixed segments.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement SegmentClassifier",
+            "description": "Create parameterization/SegmentClassifier.ts with static methods: isNumeric(value: string): boolean (all digits), isUuid(value: string): boolean (matches UUID v4 regex), isVersion(value: string): boolean (matches /^v\\d+$/). isSlug(value: string): boolean (lowercase with hyphens, length > 1).",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "9"
+          },
+          {
+            "id": 2,
+            "title": "Implement EndpointParameterizer",
+            "description": "Create parameterization/EndpointParameterizer.ts. Method: parameterize(paths: string[]): string. Logic: 1) split all paths into segments. 2) Group by segment count. 3) For each group, for each segment position: collect all values. If all identical → literal. If all numeric or all UUID → ':id'. If all version → keep literal. Else → ':param{i}'. 4) Return '/' + template.join('/'). Method: parameterizeSingle(path: string, method: string): string — for when the route path is already known (from Express req.route.path), just return it. Export from parameterization/index.ts and core barrel.",
+            "status": "pending",
+            "dependencies": [
+              "9.1"
+            ],
+            "parentId": "9"
+          }
+        ],
+        "updatedAt": "2026-04-06T13:10:12.930Z"
+      },
+      {
+        "id": "10",
+        "title": "Core - Unit & Property Tests",
+        "description": "Write comprehensive unit tests and fast-check property tests for all core modules: extraction, inference, drift detection, parameterization, visitors.",
+        "status": "done",
+        "dependencies": [
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "priority": "high",
+        "details": "Use Vitest. Property tests use fast-check to fuzz ShapeExtractor with random JSON — must never throw. Unit tests use fixed inputs with known expected outputs.",
+        "testStrategy": "All tests pass. Coverage target: > 90% for core package.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "ShapeExtractor unit tests",
+            "description": "Create tests/extraction/ShapeExtractor.test.ts. Test cases: flat object {id: 1, name: 'Alice'} → correct shape. Nested object. Array of strings. Array of mixed objects (triggers merger). Null fields. Empty object. Empty array. Boolean field. Depth limiting at configured max. Undefined values. Date objects (typeof === 'object'). Large object (200 fields).",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "10"
+          },
+          {
+            "id": 2,
+            "title": "ShapeMerger unit tests",
+            "description": "Create tests/extraction/ShapeMerger.test.ts. Test: all same primitives → single primitive. Different primitives → union. All objects same keys → merged object. Objects with different keys → merged with all keys. Mix of primitives and objects → union. Single item → return as-is. Empty array → handle gracefully.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "10"
+          },
+          {
+            "id": 3,
+            "title": "Redactor and Fingerprinter unit tests",
+            "description": "Redactor tests: field in redact list is removed. Case-insensitive ('Password' matches 'password'). Nested fields are redacted. Non-matching fields preserved. Arrays untouched. Fingerprinter tests: same shape → same hash. Different key order → same hash. Different shapes → different hashes. Nested shapes fingerprint correctly.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "10"
+          },
+          {
+            "id": 4,
+            "title": "SchemaInferrer unit tests",
+            "description": "Create tests/inference/SchemaInferrer.test.ts. Test: 3 simple shapes → basic schema with all required. Shape with optional field (present in 1/3 samples → not required). Shape with null values → nullable. 100+ shapes with string enum field → enumValues detected. Nested object fields → nested ContractSchema. Array fields → arrayItems schema. sampleCount matches input count.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "10"
+          },
+          {
+            "id": 5,
+            "title": "DriftDetector unit tests",
+            "description": "Create tests/drift/DriftDetector.test.ts. Test each DriftChangeType: provide baseline schema + incoming shape that triggers it. Test with 0 consumers → verify severity. Test with affected consumers → verify severity escalates. Test nested field drift. Test that unrelated field changes don't produce breaking events. Test multiple simultaneous drifts.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "10"
+          },
+          {
+            "id": 6,
+            "title": "EndpointParameterizer unit tests",
+            "description": "Test: ['/users/1', '/users/2'] → '/users/:id'. UUID paths → ':id'. Version paths /v1/users/1 → '/v1/users/:id'. Nested /users/1/orders/2 → '/users/:id/orders/:id'. Slug paths. Single path. Identical paths → literal.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "10"
+          },
+          {
+            "id": 7,
+            "title": "Property tests with fast-check",
+            "description": "Install fast-check as a dev dependency. Create tests/property/ShapeExtractor.property.test.ts. Use fc.anything() or fc.jsonValue() to generate random JSON values. Assert: extractShape never throws. Result is always a valid ShapeNode (satisfies type guards). Fingerprint always returns a string of consistent length. Run 1000 iterations.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "10"
+          }
+        ],
+        "updatedAt": "2026-04-07T05:16:35.514Z"
+      },
+      {
+        "id": "11",
+        "title": "Server - Setup, Config & DI Container",
+        "description": "Set up the server package with Fastify, configuration loading via cosmiconfig, and the dependency injection container that wires all components together.",
+        "status": "pending",
+        "dependencies": [
+          "10"
+        ],
+        "priority": "high",
+        "details": "The server is a single Fastify process. Config is loaded from contractcheck.server.yml (or .contractcheckrc, or package.json key) via cosmiconfig. The DI container is a simple Map-based registry. ContainerFactory reads config and registers the correct implementations (SqliteContractStore, etc.).",
+        "testStrategy": "Server starts on configured port. Config loading works from YAML file. Container resolves all registered tokens. Missing token throws descriptive error.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement ServerConfig type and ConfigLoader",
+            "description": "Create config/ServerConfig.ts with full config type matching architecture doc: storage (driver, path, connectionString), ingestion (minSamplesForStable, requiredPresenceThreshold, enumMaxCardinality, sampleRetentionDays), drift (minConfirmSamples, gracePeriodSeconds, autoResolveAfterHours), alerts (slack, pagerduty, webhook configs), port (default 7100). Create config/ConfigLoader.ts using cosmiconfig: search for 'contractcheck' config. Merge with defaults. Validate required fields.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "11"
+          },
+          {
+            "id": 2,
+            "title": "Implement DI Container",
+            "description": "Create container/Container.ts: class with Map<string, unknown>, register<T>(token, instance), resolve<T>(token) (throws if missing). Create container/Tokens.ts with const Tokens object mapping: EventBus, ContractStore, SampleStore, DriftStore, ConsumerDepStore, AlertRouter, Scheduler, ShapeExtractor, SchemaInferrer, DriftDetector, Fingerprinter.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "11"
+          },
+          {
+            "id": 3,
+            "title": "Implement ContainerFactory",
+            "description": "Create container/ContainerFactory.ts. Static build(config: ServerConfig): Container method. Registers: core classes (ShapeExtractor, Fingerprinter, SchemaInferrer, DriftDetector) from @contractcheck/core, stores via StoreFactory (task 13), alert channels via AlertChannelFactory (task 17), EventBus, Scheduler. Wires event bus subscribers: sample:ingested → drift check → alert. This is the composition root — the only place where concrete classes are instantiated.",
+            "status": "pending",
+            "dependencies": [
+              "11.1",
+              "11.2"
+            ],
+            "parentId": "11"
+          },
+          {
+            "id": 4,
+            "title": "Implement server entry point (src/index.ts)",
+            "description": "Create src/index.ts: async main() function. Load config via ConfigLoader. Build container via ContainerFactory. Create Fastify instance with logger: true. Register all route plugins (will be stubs initially). Resolve and start scheduler. Listen on config.port (default 7100). Handle SIGTERM: stop scheduler, close Fastify. Add shebang and make it the bin entry.",
+            "status": "pending",
+            "dependencies": [
+              "11.3"
+            ],
+            "parentId": "11"
+          }
+        ]
+      },
+      {
+        "id": "12",
+        "title": "Server - EventBus (Observer Pattern)",
+        "description": "Implement the typed EventBus for decoupling ingestion, drift detection, and alerting within the server process.",
+        "status": "pending",
+        "dependencies": [
+          "11"
+        ],
+        "priority": "high",
+        "details": "The EventBus is a typed pub/sub system. Events: sample:ingested, contract:updated, drift:detected, drift:confirmed, drift:resolved. Handlers are registered via on() and fire synchronously via emit(). Errors in handlers are caught and logged — never break the emitter.",
+        "testStrategy": "Test: register handler, emit event, handler called with correct payload. Multiple handlers for same event. Handler throws — other handlers still called. off() removes handler.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Define EventTypes",
+            "description": "Create events/EventTypes.ts. Define EventMap interface mapping event names to payload types: 'sample:ingested' → { provider, endpoint, method, fingerprint }, 'contract:updated' → { contractId, provider, status }, 'drift:detected' → { event: DriftEvent }, 'drift:confirmed' → { event: DriftEvent }, 'drift:resolved' → { eventId }.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "12"
+          },
+          {
+            "id": 2,
+            "title": "Implement EventBus class",
+            "description": "Create events/EventBus.ts. Uses Map<string, Set<Function>>. Methods: on<K extends keyof EventMap>(event: K, handler: (payload: EventMap[K]) => void), off<K>(event, handler), emit<K>(event, payload). emit() iterates handlers, wraps each call in try/catch — handler errors are logged via console.error but never propagate. Export from events/index.ts.",
+            "status": "pending",
+            "dependencies": [
+              "12.1"
+            ],
+            "parentId": "12"
+          }
+        ]
+      },
+      {
+        "id": "13",
+        "title": "Server - SQLite Store Layer",
+        "description": "Implement the SQLite connection manager, migration runner, and all 4 repository classes (ContractStore, SampleStore, DriftStore, ConsumerDepStore) with the StoreFactory.",
+        "status": "pending",
+        "dependencies": [
+          "11"
+        ],
+        "priority": "high",
+        "details": "Uses better-sqlite3 with synchronous API. WAL mode enabled. Prepared statements for hot paths. Each repository implements the read+write interface pair (ISP). StoreFactory creates all repositories from a single connection. Migrations are SQL files run in order.",
+        "testStrategy": "Integration tests with in-memory SQLite (path ':memory:'). Test each repository method: insert, upsert, query, update. Test migration runner applies schema correctly. Test concurrent read/write (WAL mode).",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Define server-specific store interfaces",
+            "description": "Create interfaces/IContractStore.ts with IContractReader (getContract, listContracts, getAllContracts) and IContractWriter (upsertContract, updateStatus). Type IContractStore = IContractReader & IContractWriter. Similarly create ISampleStore.ts (ISampleReader + ISampleWriter with storeShape, upsertAggregate, getShapesByEndpoint, getShape, pruneOlderThan), IDriftStore.ts (IDriftReader + IDriftWriter with createEvent, updateEvent, incrementConfirmation, getActiveEvents, getEvent), IConsumerDepStore.ts (IConsumerDepReader + IConsumerDepWriter with upsertDep, getConsumersOf, getDependenciesOf, getFullGraph, markStale). Export all from interfaces/index.ts.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "13"
+          },
+          {
+            "id": 2,
+            "title": "Implement SqliteConnection and MigrationRunner",
+            "description": "Create store/sqlite/SqliteConnection.ts. Constructor accepts dbPath: string. Opens better-sqlite3 Database. Sets pragmas: journal_mode=WAL, synchronous=NORMAL, cache_size=-64000, foreign_keys=ON, busy_timeout=5000. Exposes db getter. Has close() method. Create store/sqlite/migrations/MigrationRunner.ts: reads SQL files from migrations/ directory in order, executes them. Create store/sqlite/migrations/001_initial.sql with all CREATE TABLE and CREATE INDEX statements from architecture doc.",
+            "status": "pending",
+            "dependencies": [
+              "13.1"
+            ],
+            "parentId": "13"
+          },
+          {
+            "id": 3,
+            "title": "Implement SqliteContractStore",
+            "description": "Create store/sqlite/SqliteContractStore.ts implementing IContractStore. Constructor accepts SqliteConnection. Prepare all statements in constructor: getOne (SELECT by provider+endpoint+method), listByProvider, getAll, upsert (INSERT ON CONFLICT UPDATE), updateStatus. Implement all IContractReader + IContractWriter methods. Private toContract(row) method parses JSON schema field.",
+            "status": "pending",
+            "dependencies": [
+              "13.2"
+            ],
+            "parentId": "13"
+          },
+          {
+            "id": 4,
+            "title": "Implement SqliteSampleStore",
+            "description": "Create store/sqlite/SqliteSampleStore.ts implementing ISampleStore. Methods: storeShape (INSERT OR IGNORE into shapes table), upsertAggregate (INSERT ON CONFLICT UPDATE — increment count, update last_seen), getShapesByEndpoint (SELECT from sample_aggregates JOIN shapes), getShape (SELECT from shapes by fingerprint), pruneOlderThan (DELETE from samples older than date, return count of deleted rows).",
+            "status": "pending",
+            "dependencies": [
+              "13.2"
+            ],
+            "parentId": "13"
+          },
+          {
+            "id": 5,
+            "title": "Implement SqliteDriftStore",
+            "description": "Create store/sqlite/SqliteDriftStore.ts implementing IDriftStore. Methods: createEvent (INSERT), updateEvent (UPDATE by id), incrementConfirmation (UPDATE confirmation_count = confirmation_count + 1, update last_seen, promote status from 'pending' to 'active' if count >= threshold), getActiveEvents (SELECT WHERE status IN ('pending', 'active')), getEvent (SELECT by id), getEventsByProvider.",
+            "status": "pending",
+            "dependencies": [
+              "13.2"
+            ],
+            "parentId": "13"
+          },
+          {
+            "id": 6,
+            "title": "Implement SqliteConsumerDepStore",
+            "description": "Create store/sqlite/SqliteConsumerDepStore.ts implementing IConsumerDepStore. Methods: upsertDep (INSERT ON CONFLICT UPDATE — merge fieldsAccessed arrays, increment sample_count, update last_seen), getConsumersOf (SELECT by provider+endpoint+method), getDependenciesOf (SELECT by consumer), getFullGraph (SELECT all, group into DependencyGraph structure), markStale (UPDATE or DELETE where last_seen < date).",
+            "status": "pending",
+            "dependencies": [
+              "13.2"
+            ],
+            "parentId": "13"
+          },
+          {
+            "id": 7,
+            "title": "Implement StoreFactory",
+            "description": "Create store/StoreFactory.ts. Static create(config: StorageConfig): StoreSet method. StoreSet = { contracts: IContractStore, samples: ISampleStore, drift: IDriftStore, consumerDeps: IConsumerDepStore }. For 'sqlite' driver: create SqliteConnection, run migrations, return all 4 SqliteXxxStore instances sharing the connection. For 'postgres': throw 'PostgreSQL support not yet implemented'. Export from store/index.ts.",
+            "status": "pending",
+            "dependencies": [
+              "13.3",
+              "13.4",
+              "13.5",
+              "13.6"
+            ],
+            "parentId": "13"
+          }
+        ]
+      },
+      {
+        "id": "14",
+        "title": "Server - Ingestion Service",
+        "description": "Implement the IngestionService that processes incoming SDK batches, stores shapes and samples, and emits events for drift detection.",
+        "status": "pending",
+        "dependencies": [
+          "12",
+          "13"
+        ],
+        "priority": "high",
+        "details": "IngestionService receives validated batches, iterates samples, stores new shapes, upserts sample aggregates, and emits 'sample:ingested' events via EventBus. BatchValidator validates batch structure before processing. SampleNormalizer deduplicates and normalizes timestamps.",
+        "testStrategy": "Unit test: mock stores and EventBus. Send a batch, verify shapes stored, aggregates upserted, events emitted for each unique endpoint+fingerprint combination. Test deduplication within a batch.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement BatchValidator",
+            "description": "Create ingestion/BatchValidator.ts. Methods: validateProviderBatch(batch: unknown): ProviderBatch (validates structure, throws on invalid). validateConsumerBatch(batch: unknown): ConsumerBatch. Check required fields, types, non-empty samples/accesses arrays. Can also be handled by Fastify JSON schema validation in the route layer — decide which approach. If using Fastify schemas, this class becomes a thin wrapper.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "14"
+          },
+          {
+            "id": 2,
+            "title": "Implement SampleNormalizer",
+            "description": "Create ingestion/SampleNormalizer.ts. Method: normalizeProviderBatch(batch: ProviderBatch): NormalizedSample[]. Groups samples by endpoint+fingerprint, sums counts, keeps earliest timestamp. Returns deduplicated list. Method: normalizeConsumerBatch(batch: ConsumerBatch): NormalizedAccess[]. Merges accesses by provider+endpoint, unions fieldsAccessed arrays, sums counts.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "14"
+          },
+          {
+            "id": 3,
+            "title": "Implement IngestionService",
+            "description": "Create ingestion/IngestionService.ts. Constructor accepts: ISampleStore, IConsumerDepStore, EventBus. Method: ingestProviderBatch(batch: ProviderBatch): { stored: number, missingFingerprints: string[] }. For each normalized sample: if shape is provided → sampleStore.storeShape(fingerprint, shape). If shape is undefined → check if fingerprint exists via sampleStore.getShape(). If not → add to missingFingerprints list. sampleStore.upsertAggregate(). eventBus.emit('sample:ingested', { provider, endpoint, method, fingerprint }). Method: ingestConsumerBatch(batch: ConsumerBatch). For each access: consumerDepStore.upsertDep(). Export from ingestion/index.ts.",
+            "status": "pending",
+            "dependencies": [
+              "14.1",
+              "14.2"
+            ],
+            "parentId": "14"
+          }
+        ]
+      },
+      {
+        "id": "15",
+        "title": "Server - API Routes",
+        "description": "Implement all Fastify route handlers: ingest routes (POST /ingest/provider and /ingest/consumer), query routes (GET /contracts, /graph, /drift), action routes (POST /drift/:id/acknowledge), and health check.",
+        "status": "pending",
+        "dependencies": [
+          "14"
+        ],
+        "priority": "high",
+        "details": "Each route group is a Fastify plugin registered via app.register(). Route handlers receive only the interfaces they need (ISP). Ingest routes return 202 Accepted with X-Missing-Fingerprints header. Query routes return JSON. Use Fastify JSON Schema for request validation.",
+        "testStrategy": "Integration tests: spin up Fastify with in-memory SQLite, POST batches, GET contracts and verify. Test 400 on malformed batch. Test 404 on unknown service/endpoint. Test acknowledge changes drift status.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create route validation schemas",
+            "description": "Create routes/schemas/ingestSchemas.ts with Fastify JSON Schema for POST /ingest/provider body (ProviderBatch structure) and POST /ingest/consumer body (ConsumerBatch structure). Create routes/schemas/querySchemas.ts with schemas for query parameters (status filter, pagination).",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "15"
+          },
+          {
+            "id": 2,
+            "title": "Implement ingestRoutes plugin",
+            "description": "Create routes/ingestRoutes.ts. Export function registerIngestRoutes(app: FastifyInstance, deps: { ingestionService: IngestionService }). POST /ingest/provider: validate body with schema, call ingestionService.ingestProviderBatch(). Return 202 with { stored } body. If missingFingerprints.length > 0, add X-Missing-Fingerprints response header. POST /ingest/consumer: validate body, call ingestionService.ingestConsumerBatch(). Return 202.",
+            "status": "pending",
+            "dependencies": [
+              "15.1"
+            ],
+            "parentId": "15"
+          },
+          {
+            "id": 3,
+            "title": "Implement contractRoutes plugin",
+            "description": "Create routes/contractRoutes.ts. GET /contracts — list all contracts (from IContractReader.getAllContracts()). GET /contracts/:service — list contracts for service. GET /contracts/:service/:endpoint — get specific contract. Return 404 if not found. Response includes contract schema, sample count, confidence, status.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "15"
+          },
+          {
+            "id": 4,
+            "title": "Implement graphRoutes plugin",
+            "description": "Create routes/graphRoutes.ts. GET /graph — full dependency graph from IConsumerDepReader.getFullGraph(). GET /graph/:service — dependencies for specific service (both 'provides' and 'consumes' directions). Response structured as { provides: [...], consumes: [...] }.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "15"
+          },
+          {
+            "id": 5,
+            "title": "Implement driftRoutes plugin",
+            "description": "Create routes/driftRoutes.ts. GET /drift — list active drift events from IDriftReader.getActiveEvents(). GET /drift/:id — single drift event detail. POST /drift/:id/acknowledge — update status to 'acknowledged' via IDriftWriter.updateEvent(). Return 404 if event not found.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "15"
+          },
+          {
+            "id": 6,
+            "title": "Implement healthRoutes plugin",
+            "description": "Create routes/healthRoutes.ts. GET /health — return { status: 'ok', uptime: process.uptime(), version: pkg.version }. No authentication required.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "15"
+          }
+        ]
+      },
+      {
+        "id": "16",
+        "title": "Server - Scheduler & Background Jobs",
+        "description": "Implement the Scheduler and all background jobs: contract inference, drift resolution, sample pruning, stale consumer cleanup.",
+        "status": "pending",
+        "dependencies": [
+          "13",
+          "12"
+        ],
+        "priority": "medium",
+        "details": "Scheduler uses setInterval to trigger jobs at configured intervals. Each job implements ISchedulerJob with name, intervalMs, and async execute(). Jobs run sequentially within each tick — not concurrent. Errors in jobs are caught and logged.",
+        "testStrategy": "Test scheduler start/stop. Test each job in isolation with mock stores. InferenceJob: verify it calls SchemaInferrer and updates contracts. PruningJob: verify it deletes old samples.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement ISchedulerJob interface and Scheduler class",
+            "description": "Create scheduler/Scheduler.ts implementing IScheduler. Holds Map<string, { job: ISchedulerJob, timer: NodeJS.Timeout }>. register(job): creates setInterval for job.intervalMs, calls job.execute() wrapped in try/catch (errors logged, never thrown). start(): activates all timers. stop(): clears all intervals.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "16"
+          },
+          {
+            "id": 2,
+            "title": "Implement InferenceJob",
+            "description": "Create scheduler/jobs/InferenceJob.ts. intervalMs: 5 * 60 * 1000 (5 minutes). execute(): 1) load all contracts with status 'learning'. 2) For each, load sample aggregates for that endpoint. 3) Load shapes by fingerprint. 4) Call SchemaInferrer.infer(). 5) If sampleCount >= minSamplesForStable, update contract status to 'stable'. 6) Upsert contract with new schema. 7) Emit 'contract:updated' event.",
+            "status": "pending",
+            "dependencies": [
+              "16.1"
+            ],
+            "parentId": "16"
+          },
+          {
+            "id": 3,
+            "title": "Implement DriftResolutionJob, SamplePruningJob, StaleConsumerJob",
+            "description": "DriftResolutionJob (intervalMs: 15 min): find drift events older than autoResolveAfterHours with no new confirmations → set status 'resolved'. SamplePruningJob (intervalMs: 1 hour): call sampleStore.pruneOlderThan(retentionDays). StaleConsumerJob (intervalMs: 24 hours): call consumerDepStore.markStale(30 days). Each wraps execute() in try/catch.",
+            "status": "pending",
+            "dependencies": [
+              "16.1"
+            ],
+            "parentId": "16"
+          }
+        ]
+      },
+      {
+        "id": "17",
+        "title": "Server - Alert System",
+        "description": "Implement AlertRouter, alert channel implementations (Slack, PagerDuty, generic Webhook), message formatters, and AlertChannelFactory.",
+        "status": "pending",
+        "dependencies": [
+          "12"
+        ],
+        "priority": "medium",
+        "details": "AlertRouter holds a list of IAlertChannel instances and routes drift events to all of them via Promise.allSettled (one failure doesn't block others). Each channel formats and sends the alert. SlackChannel posts to a webhook URL. PagerDutyChannel creates an incident. WebhookChannel is a generic POST to any URL. AlertChannelFactory creates channels from config.",
+        "testStrategy": "Unit test AlertRouter with mock channels: verify all channels called. Test SlackChannel formats correct payload. Test PagerDutyChannel respects severity threshold. Test channel failure doesn't affect others.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement SlackFormatter and PlainTextFormatter",
+            "description": "Create alerting/formatters/SlackFormatter.ts. Method: format(event: DriftEvent): { text: string, blocks: object[] }. Text is a fallback plain message. Blocks use Slack Block Kit: header with severity emoji (info=blue, warning=yellow, breaking=red, critical=skull), section with provider/endpoint/change, section listing affected consumers. Create PlainTextFormatter.ts for generic text output.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "17"
+          },
+          {
+            "id": 2,
+            "title": "Implement alert channel classes",
+            "description": "Create alerting/channels/SlackChannel.ts implementing IAlertChannel. Constructor: webhookUrl, formatter. send(): POST to webhookUrl with formatter.format(event). Create PagerDutyChannel.ts: constructor with routingKey and severityThreshold. send(): if severity >= threshold, POST to PagerDuty Events API v2. Create WebhookChannel.ts: generic POST to configured URL with JSON body.",
+            "status": "pending",
+            "dependencies": [
+              "17.1"
+            ],
+            "parentId": "17"
+          },
+          {
+            "id": 3,
+            "title": "Implement AlertRouter and AlertChannelFactory",
+            "description": "Create alerting/AlertRouter.ts. Has channels: IAlertChannel[]. register(channel). route(event: DriftEvent): Promise<void> — calls Promise.allSettled(channels.map(ch => ch.send(event))), logs failures. Create AlertChannelFactory.ts: static createAll(config: AlertConfig): IAlertChannel[]. Creates SlackChannel if config.slack is present, PagerDutyChannel if config.pagerduty, WebhookChannel if config.webhook. Export all from alerting/index.ts.",
+            "status": "pending",
+            "dependencies": [
+              "17.2"
+            ],
+            "parentId": "17"
+          }
+        ]
+      },
+      {
+        "id": "18",
+        "title": "Server - Integration Tests",
+        "description": "Write integration tests for the full server pipeline: SDK batch → ingestion → inference → drift detection → alert.",
+        "status": "pending",
+        "dependencies": [
+          "15",
+          "16",
+          "17"
+        ],
+        "priority": "medium",
+        "details": "Tests spin up a real Fastify server with in-memory SQLite. POST provider batches via HTTP, verify contracts are inferred. Change the response shape, verify drift events are created. Use NoopTransport and mock alert channels.",
+        "testStrategy": "Full pipeline tests pass. Cover: happy path (ingest → infer → stable contract), drift detection (change shape → drift event created), consumer impact (add consumer deps → verify affected consumers in drift event), acknowledge drift.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create test helper to bootstrap server with in-memory SQLite",
+            "description": "Create tests/helpers/createTestServer.ts. Function that: creates ServerConfig with SQLite ':memory:', builds Container, registers all routes on a Fastify instance. Returns { app, container, stores }. Provides easy access to stores for assertions. Teardown closes DB and Fastify.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "18"
+          },
+          {
+            "id": 2,
+            "title": "Write ingestion → inference → drift integration tests",
+            "description": "Create tests/integration/IngestToDrift.integration.test.ts. Test 1: POST 50 provider batches with identical shape → contract transitions to 'stable'. Test 2: POST a batch with a different shape (field removed) after stable → drift event created with severity 'warning' (no consumers). Test 3: POST consumer deps first, then change shape → drift event has 'breaking' severity with affected consumers listed. Test 4: POST /drift/:id/acknowledge → status changes. Use supertest or Fastify's inject() method.",
+            "status": "pending",
+            "dependencies": [
+              "18.1"
+            ],
+            "parentId": "18"
+          }
+        ]
+      },
+      {
+        "id": "19",
+        "title": "SDK Express - Pipeline & Base Middleware",
+        "description": "Set up the SDK Express package and implement the Chain of Responsibility processing pipeline (SamplerStep, RedactorStep, ExtractorStep, FingerprintStep) and the Template Method base middleware.",
+        "status": "pending",
+        "dependencies": [
+          "10"
+        ],
+        "priority": "high",
+        "details": "The pipeline processes each response through composable steps. Each step extends PipelineStep and implements process(context). Steps are chained via setNext(). BaseMiddleware defines the middleware lifecycle and uses the pipeline internally. Dependencies (ShapeExtractor, Fingerprinter, Redactor) come from @contractcheck/core.",
+        "testStrategy": "Test pipeline with all steps: verify sampler filters by rate, redactor strips fields, extractor produces shape, fingerprinter produces hash. Test individual steps in isolation. Test pipeline with NoopStep to verify chain works.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement PipelineStep abstract class and Pipeline composer",
+            "description": "Create pipeline/PipelineStep.ts: abstract class with next: PipelineStep | null, setNext(step) returns the step (for chaining), passToNext(context) calls next.process() or returns context. Abstract process(context): PipelineContext | null. Create pipeline/Pipeline.ts: constructor takes PipelineStep[], chains them via setNext(). execute(context) calls head.process(). Define PipelineContext interface: rawBody, shape?, fingerprint?, endpoint, statusCode, caller, timestamp.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "19"
+          },
+          {
+            "id": 2,
+            "title": "Implement pipeline steps (Sampler, Redactor, Extractor, Fingerprint)",
+            "description": "SamplerStep: constructor(sampleRate), process() → if Math.random() > sampleRate return null (skip), else passToNext(). RedactorStep: constructor(IRedactor), process() → redact rawBody if it's an object, passToNext(). ExtractorStep: constructor(IShapeExtractor), process() → context.shape = extractor.extract(rawBody), passToNext(). FingerprintStep: constructor(IFingerprinter), process() → must handle async fingerprinter. Note: since hash-wasm is async, this step needs to be async. Consider making the pipeline async: process() returns Promise<PipelineContext | null>. Update PipelineStep and Pipeline accordingly.",
+            "status": "pending",
+            "dependencies": [
+              "19.1"
+            ],
+            "parentId": "19"
+          },
+          {
+            "id": 3,
+            "title": "Implement BaseMiddleware abstract class",
+            "description": "Create middleware/BaseMiddleware.ts. Constructor: pipeline (Pipeline), reporter (ShapeReporter). Method: createHandler() returns Express RequestHandler wrapped in safeMiddleware (try/catch that calls next() on any error). Protected abstract intercept(req, res, next). Protected reportShape(context: PipelineContext): runs pipeline.execute(context), if result has shape and fingerprint, calls reporter.add(). safeMiddleware is a standalone function that wraps any middleware in try/catch — SDK never throws into user code.",
+            "status": "pending",
+            "dependencies": [
+              "19.1",
+              "19.2"
+            ],
+            "parentId": "19"
+          }
+        ]
+      },
+      {
+        "id": "20",
+        "title": "SDK Express - Provider Middleware",
+        "description": "Implement ProviderMiddleware that intercepts Express res.json() calls, extracts response shapes, and reports them to the contractcheck server.",
+        "status": "pending",
+        "dependencies": [
+          "19"
+        ],
+        "priority": "high",
+        "details": "Extends BaseMiddleware. Overrides intercept() to monkey-patch res.json(). The original response is sent immediately and untouched. Shape extraction happens in setImmediate() — completely off the request hot path. Caller identity comes from X-Service-Name header, User-Agent, or falls back to 'unknown'.",
+        "testStrategy": "Mount middleware on test Express app. Send requests, verify: response is unchanged, shape is reported to reporter with correct endpoint/statusCode/caller. Verify setImmediate timing — shape extraction doesn't block response. Verify middleware doesn't throw even if reporter fails.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement ProviderMiddleware class",
+            "description": "Create middleware/ProviderMiddleware.ts extending BaseMiddleware. Override intercept(req, res, next): save originalJson = res.json.bind(res). Override res.json = (body) => { setImmediate(() => this.reportShape({ rawBody: body, endpoint: req.method + ' ' + (req.route?.path || req.path), statusCode: res.statusCode, caller: req.headers['x-service-name'] || null, timestamp: new Date().toISOString() })); return originalJson(body); }. Call next().",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "20"
+          },
+          {
+            "id": 2,
+            "title": "Create public API: contractcheck.provider()",
+            "description": "In src/index.ts, export contractcheck object with provider(config: SDKConfig) method. This method: creates Redactor from config.redact, creates ShapeExtractor, creates Fingerprinter, builds Pipeline (Sampler → Redactor → Extractor → Fingerprint), creates ShapeReporter with transport from TransportFactory, creates ProviderMiddleware(pipeline, reporter), returns middleware.createHandler(). This is the only public API surface for provider-side usage.",
+            "status": "pending",
+            "dependencies": [
+              "20.1"
+            ],
+            "parentId": "20"
+          }
+        ]
+      },
+      {
+        "id": "21",
+        "title": "SDK Express - Consumer Field Tracking",
+        "description": "Implement ProxyFieldTracker and TrackedFetch (contractcheck.fetch) that track which fields a consumer reads from upstream service responses.",
+        "status": "pending",
+        "dependencies": [
+          "19"
+        ],
+        "priority": "high",
+        "details": "ProxyFieldTracker wraps an object in a JavaScript Proxy that intercepts get, ownKeys, has, and getOwnPropertyDescriptor traps. Each access records the dot-path of the accessed field. TrackedFetch wraps global fetch, parses JSON response, wraps it in ProxyFieldTracker, and reports accessed fields after the current event loop tick via setImmediate.",
+        "testStrategy": "Test ProxyFieldTracker: access top-level field → recorded. Access nested field → dot-path recorded. Object.keys() → all keys recorded. 'field' in obj → recorded. Array index access → path includes []. Destructuring → all destructured fields recorded. Test TrackedFetch: mock fetch, verify fields accessed from response body are reported to consumer reporter.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement ProxyFieldTracker",
+            "description": "Create tracking/ProxyFieldTracker.ts implementing IFieldTracker. Internal state: accessed = Set<string>. wrap<T>(obj: T): T — returns Proxy. Proxy traps: get(target, prop) → record fieldPath (handle dot-path building for nested access, return new Proxy for object values to continue tracking), ownKeys(target) → record all string keys, has(target, prop) → record prop, getOwnPropertyDescriptor → record prop. Skip symbol properties. For arrays: numeric index access records path with [] notation. reset(): clears accessed set. getAccessedFields(): returns [...accessed].",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "21"
+          },
+          {
+            "id": 2,
+            "title": "Implement TrackedFetch wrapper",
+            "description": "Create tracking/TrackedFetch.ts. Export createTrackedFetch(consumerReporter: ShapeReporter, serviceName: string). Returns an async function with same signature as fetch. Implementation: call global fetch, parse JSON body, create ProxyFieldTracker, wrap body. Use setImmediate to schedule reporting after consumer code has accessed the fields. In the setImmediate callback: get accessed fields from tracker, report to consumerReporter as ConsumerAccess. Parse the URL to extract provider service name and endpoint path.",
+            "status": "pending",
+            "dependencies": [
+              "21.1"
+            ],
+            "parentId": "21"
+          },
+          {
+            "id": 3,
+            "title": "Implement ConsumerMiddleware and public API",
+            "description": "Create middleware/ConsumerMiddleware.ts extending BaseMiddleware. Override intercept(): attach trackedFetch to request context. In src/index.ts, add contractcheck.consumer(config) method that creates ConsumerMiddleware and returns handler. Add contractcheck.fetch as a module-level tracked fetch instance configured during consumer() setup.",
+            "status": "pending",
+            "dependencies": [
+              "21.2"
+            ],
+            "parentId": "21"
+          }
+        ]
+      },
+      {
+        "id": "22",
+        "title": "SDK Express - Transport & ShapeReporter",
+        "description": "Implement the transport layer (HttpTransport, NoopTransport, TransportFactory) and ShapeReporter (buffering, deduplication, batch flushing).",
+        "status": "pending",
+        "dependencies": [
+          "19"
+        ],
+        "priority": "high",
+        "details": "ShapeReporter buffers ProviderSamples in memory, deduplicates by endpoint+fingerprint (increment count), and flushes via transport adapter every 5 seconds or 100 items. HttpTransport does a fire-and-forget POST. NoopTransport does nothing (for testing). TransportFactory creates the correct adapter from config. All transports are fire-and-forget — errors are silently swallowed.",
+        "testStrategy": "ShapeReporter: verify deduplication (2 identical samples → 1 entry with count 2). Verify flush triggers at buffer size threshold. Verify flush triggers at interval. Verify destroy() flushes remaining buffer. HttpTransport: mock fetch, verify correct URL and payload. NoopTransport: verify it does nothing and never throws.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement HttpTransport",
+            "description": "Create transport/HttpTransport.ts implementing ITransportAdapter. Constructor: serverUrl, timeoutMs (default 3000). send(batch): fetch(serverUrl + '/ingest/provider' or '/ingest/consumer' based on batch type, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(batch), signal: AbortSignal.timeout(timeoutMs) }).catch(() => {}). Completely fire-and-forget. destroy(): no-op.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "22"
+          },
+          {
+            "id": 2,
+            "title": "Implement NoopTransport and TransportFactory",
+            "description": "NoopTransport: send() does nothing, destroy() does nothing. Used in tests. TransportFactory: static create(config: TransportConfig): ITransportAdapter. Switch on config.type: 'http' → HttpTransport, 'noop' → NoopTransport. 'sqs' and 'kafka' throw 'not yet implemented'. Export from transport/index.ts.",
+            "status": "pending",
+            "dependencies": [
+              "22.1"
+            ],
+            "parentId": "22"
+          },
+          {
+            "id": 3,
+            "title": "Implement ShapeReporter",
+            "description": "Create reporter/ShapeReporter.ts. Constructor: transport (ITransportAdapter), service (string), flushIntervalMs (default 5000), maxBufferSize (default 10000). Internal state: buffer (ProviderSample[]), seenFingerprints (Set<string>), flushTimer (setInterval). add(sample): find existing in buffer with same endpoint+fingerprint → increment count. If not found, push. If fingerprint already in seenFingerprints, set sample.shape = undefined (server already has it). If buffer.length >= maxBufferSize, drop oldest half. If buffer.length >= 100, trigger flush(). flush(): if empty, return. Build ProviderBatch, add all fingerprints to seenFingerprints, clear buffer, call transport.send(batch). destroy(): clearInterval, flush remaining. Register process.on('beforeExit', flush).",
+            "status": "pending",
+            "dependencies": [
+              "22.2"
+            ],
+            "parentId": "22"
+          }
+        ]
+      },
+      {
+        "id": "23",
+        "title": "SDK Express - Tests",
+        "description": "Write unit and integration tests for all SDK Express components: pipeline, middleware, tracking, transport, reporter.",
+        "status": "pending",
+        "dependencies": [
+          "20",
+          "21",
+          "22"
+        ],
+        "priority": "medium",
+        "details": "Use Vitest. Integration tests mount real Express middleware on a test Express app via supertest. Unit tests use NoopTransport to capture reported data without network calls.",
+        "testStrategy": "All tests pass. Cover: provider middleware captures shapes correctly, consumer proxy tracks field access, reporter deduplicates and flushes, pipeline steps execute in order, safe middleware catches errors.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Pipeline and individual step tests",
+            "description": "Test full pipeline: create Pipeline with all 4 steps, execute with a PipelineContext containing a JSON body. Verify output has shape and fingerprint. Test SamplerStep: with rate 0 → always null. Rate 1 → always passes. Test RedactorStep: verify redacted fields. Test ExtractorStep: verify shape output. Test FingerprintStep: verify hash output.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "23"
+          },
+          {
+            "id": 2,
+            "title": "ProviderMiddleware integration tests",
+            "description": "Create test Express app, mount ProviderMiddleware with NoopTransport. Define a route that returns JSON. Send request via supertest. Verify: response body is correct and unmodified, response status is correct. Wait for setImmediate to fire (use setTimeout(0) in test). Verify reporter received a sample with correct endpoint, shape, caller (from X-Service-Name header).",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "23"
+          },
+          {
+            "id": 3,
+            "title": "ProxyFieldTracker and TrackedFetch tests",
+            "description": "ProxyFieldTracker tests: wrap an object, access fields, verify getAccessedFields() returns correct dot-paths. Test nested access. Test array access. Test Object.keys(). Test 'in' operator. Test destructuring. TrackedFetch tests: mock global fetch to return JSON, call tracked fetch, access fields on result, verify consumer reporter receives correct fieldsAccessed.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "23"
+          },
+          {
+            "id": 4,
+            "title": "ShapeReporter tests",
+            "description": "Test deduplication: add 5 samples with same fingerprint → buffer has 1 entry with count 5. Test flush interval: mock setInterval, trigger flush, verify transport.send called with correct batch. Test maxBufferSize: add more than max → oldest are dropped. Test destroy: remaining buffer is flushed. Test that seenFingerprints prevents re-sending shapes.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "23"
+          }
+        ]
+      },
+      {
+        "id": "24",
+        "title": "CLI - Setup & Offline Commands",
+        "description": "Set up the CLI package with Commander.js and implement the two offline commands: InferCommand (infer contracts from sample files) and DiffCommand (compare two sets of samples and report drift).",
+        "status": "pending",
+        "dependencies": [
+          "10"
+        ],
+        "priority": "high",
+        "details": "The CLI uses Commander.js for command routing. Offline mode operates on directories of JSON files (no server needed). InferCommand reads sample files, runs SchemaInferrer, outputs contracts. DiffCommand reads two directories ('before' and 'after'), infers schemas for both, runs DriftDetector, outputs drift report.",
+        "testStrategy": "Create fixture JSON sample files. Run InferCommand → verify output shows inferred contract. Run DiffCommand with before/after samples where a field is removed → verify drift report shows FIELD_REMOVED. Test with --format json flag.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set up Commander.js program with subcommands",
+            "description": "In src/index.ts: create Commander program. Set name('contractcheck'), description, version from package.json. Register subcommands: infer, diff, contracts, graph, drift, ack, status. Each command is imported from commands/ directory. In bin/contractcheck.ts: import and run the program. Ensure shebang #!/usr/bin/env node is present.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "24"
+          },
+          {
+            "id": 2,
+            "title": "Implement InferCommand",
+            "description": "Create commands/InferCommand.ts. Command: 'infer <directory>'. Options: --format (table|json, default table), --threshold (presence threshold, default 0.95). Action: 1) read all .json files from directory recursively, 2) group by subdirectory structure (e.g., samples/user-service/GET_users_id/*.json → provider=user-service, endpoint=GET /users/:id), 3) parse each file as JSON, 4) run ShapeExtractor on each, 5) run SchemaInferrer, 6) output via IRenderer (table or JSON). Handle errors: directory doesn't exist, no JSON files found, invalid JSON.",
+            "status": "pending",
+            "dependencies": [
+              "24.1"
+            ],
+            "parentId": "24"
+          },
+          {
+            "id": 3,
+            "title": "Implement DiffCommand",
+            "description": "Create commands/DiffCommand.ts. Command: 'diff <before-dir> <after-dir>'. Options: --format (table|json), --fail-on (info|warning|breaking|critical). Action: 1) infer schemas from before-dir samples, 2) infer schemas from after-dir samples, 3) for each endpoint in both, run DriftDetector.detect(before-schema, after-shapes[0], []) — no consumer deps in offline mode, 4) output drift report via IRenderer, 5) exit with code based on --fail-on flag and highest severity found.",
+            "status": "pending",
+            "dependencies": [
+              "24.1"
+            ],
+            "parentId": "24"
+          }
+        ]
+      },
+      {
+        "id": "25",
+        "title": "CLI - Renderers & Connected Mode Commands",
+        "description": "Implement TableRenderer and JsonRenderer for output formatting, ApiClient for server communication, and connected mode commands (contracts, graph, drift, ack, status).",
+        "status": "pending",
+        "dependencies": [
+          "24",
+          "15"
+        ],
+        "priority": "medium",
+        "details": "TableRenderer uses chalk + cli-table3 to produce colored terminal output matching the design in plan.md. JsonRenderer outputs raw JSON for piping. ApiClient wraps HTTP calls to the contractcheck server. Connected commands use ApiClient to query the server and render results.",
+        "testStrategy": "Renderers: snapshot tests for table output. ApiClient: mock HTTP calls, verify correct URLs and query params. Connected commands: mock ApiClient, verify output matches expected format.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement IRenderer interface, TableRenderer, and JsonRenderer",
+            "description": "Create interfaces/IRenderer.ts: interface IRenderer { renderContracts(contracts: Contract[]): string; renderGraph(graph: DependencyGraph): string; renderDrift(events: DriftEvent[]): string; renderDiffReport(events: DriftEvent[]): string; }. Create renderers/Colors.ts with chalk color constants (header: cyan, severity.breaking: red, severity.warning: yellow, etc.). Create renderers/TableRenderer.ts implementing IRenderer using cli-table3 for tables and chalk for colors, matching the output formats in plan.md. Create renderers/JsonRenderer.ts: each method returns JSON.stringify(data, null, 2).",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "25"
+          },
+          {
+            "id": 2,
+            "title": "Implement ApiClient",
+            "description": "Create api/ApiClient.ts implementing IApiClient. Constructor: serverUrl. Methods: getContracts(service?: string), getGraph(service?: string), getDriftEvents(), getDriftEvent(id), acknowledgeEvent(id), getHealth(). Each method does a fetch to the corresponding server endpoint, parses JSON response, returns typed result. Handles errors: server unreachable → throw with helpful message.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "25"
+          },
+          {
+            "id": 3,
+            "title": "Implement connected mode commands",
+            "description": "Create commands/ContractsCommand.ts: 'contracts [service]' → ApiClient.getContracts() → renderer.renderContracts(). Create commands/GraphCommand.ts: 'graph [service]' → ApiClient.getGraph() → renderer.renderGraph(). Create commands/DriftCommand.ts: 'drift [id]' → getEvents or getEvent → renderer.renderDrift(). Create commands/AckCommand.ts: 'ack <id>' → ApiClient.acknowledgeEvent(). Create commands/StatusCommand.ts: 'status' → ApiClient.getHealth() → show server info. All commands accept --server-url option (default http://localhost:7100) and --format option.",
+            "status": "pending",
+            "dependencies": [
+              "25.1",
+              "25.2"
+            ],
+            "parentId": "25"
+          }
+        ]
+      },
+      {
+        "id": "26",
+        "title": "CLI - Tests",
+        "description": "Write tests for CLI commands, renderers, and ApiClient.",
+        "status": "pending",
+        "dependencies": [
+          "25"
+        ],
+        "priority": "medium",
+        "details": "Test each command with mock inputs. Snapshot test renderer output. Mock ApiClient for connected commands.",
+        "testStrategy": "All CLI tests pass. InferCommand reads fixture files correctly. DiffCommand produces expected exit codes. Renderers produce consistent output (snapshot tests).",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create sample fixtures and test InferCommand + DiffCommand",
+            "description": "Create test fixtures: tests/fixtures/samples/user-service/GET_users_id/ with 5 JSON response files. Create before/ and after/ fixture dirs where after/ has a changed response shape. Test InferCommand: run with fixtures dir, verify output includes inferred contract. Test DiffCommand: run with before/after dirs, verify drift report output and exit code.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "26"
+          },
+          {
+            "id": 2,
+            "title": "Test renderers and connected commands",
+            "description": "Renderer tests: pass known Contract[], DriftEvent[] data to TableRenderer and JsonRenderer. Snapshot test the table output. Verify JSON output is valid JSON. Connected command tests: mock ApiClient to return fixed data, run command, verify output.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "26"
+          }
+        ]
+      },
+      {
+        "id": "27",
+        "title": "CI Integration - Diff Command & GitHub Action",
+        "description": "Implement the CI-mode diff command ('contractcheck diff --service <name>') that queries the contractcheck server for known contracts and consumer deps, compares against the current service's response shapes (captured from test run), and exits non-zero on breaking changes. Create a GitHub Action wrapper.",
+        "status": "pending",
+        "dependencies": [
+          "25",
+          "18"
+        ],
+        "priority": "medium",
+        "details": "The CI diff command: 1) connects to server via ApiClient, 2) fetches contracts and consumer deps for the service, 3) runs the service's test suite with contractcheck SDK instrumented to capture response shapes, OR reads from a local samples directory, 4) compares captured shapes against known contracts, 5) outputs drift report, 6) exits with code 0 (no breaking), 1 (breaking), or 2 (warnings only). GitHub Action wraps this as a reusable action.",
+        "testStrategy": "Test CI diff command with fixture samples and mock server responses. Verify exit codes for each severity level. Verify --fail-on flag works (fail on warning vs only on breaking). GitHub Action: verify action.yml is valid.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement CI diff command mode",
+            "description": "Extend DiffCommand to support --service flag. When --service is provided: 1) create ApiClient with --server-url, 2) fetch contracts for service, 3) fetch consumer deps for service, 4) read local samples from --samples-dir (default: ./contractcheck-samples/), 5) for each endpoint: extract shapes from samples, compare against server contract using DriftDetector with real consumer deps, 6) output report, 7) exit with code based on --fail-on (default: 'breaking'). Exit codes: 0 = safe, 1 = breaking changes, 2 = warnings only.",
+            "status": "pending",
+            "dependencies": [],
+            "parentId": "27"
+          },
+          {
+            "id": 2,
+            "title": "Create GitHub Action (action.yml)",
+            "description": "Create .github/action.yml at repo root (or in a separate contractcheck-action/ directory). Action inputs: service (required), server-url (required), fail-on (default 'breaking'), samples-dir (default './contractcheck-samples/'). Action runs: uses node20, runs 'npx contractcheck diff --service $INPUT_SERVICE --server-url $INPUT_SERVER_URL --fail-on $INPUT_FAIL_ON --samples-dir $INPUT_SAMPLES_DIR --format json'. Outputs: drift-report (JSON string). Branding: icon 'shield', color 'blue'.",
+            "status": "pending",
+            "dependencies": [
+              "27.1"
+            ],
+            "parentId": "27"
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "version": "1.0.0",
+      "lastModified": "2026-04-07T05:16:35.515Z",
+      "taskCount": 27,
+      "completedCount": 10,
+      "tags": [
+        "master"
+      ]
+    }
+  }
+}
