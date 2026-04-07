@@ -1008,7 +1008,7 @@
         "id": "19",
         "title": "SDK Express - Pipeline & Base Middleware",
         "description": "Set up the SDK Express package and implement the Chain of Responsibility processing pipeline (SamplerStep, RedactorStep, ExtractorStep, FingerprintStep) and the Template Method base middleware.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "10"
         ],
@@ -1045,13 +1045,14 @@
             ],
             "parentId": "19"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:37:55.818Z"
       },
       {
         "id": "20",
         "title": "SDK Express - Provider Middleware",
         "description": "Implement ProviderMiddleware that intercepts Express res.json() calls, extracts response shapes, and reports them to the contractcheck server.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "19"
         ],
@@ -1077,13 +1078,14 @@
             ],
             "parentId": "20"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:42:30.358Z"
       },
       {
         "id": "21",
         "title": "SDK Express - Consumer Field Tracking",
         "description": "Implement ProxyFieldTracker and TrackedFetch (contractcheck.fetch) that track which fields a consumer reads from upstream service responses.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "19"
         ],
@@ -1119,13 +1121,14 @@
             ],
             "parentId": "21"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:37:55.820Z"
       },
       {
         "id": "22",
         "title": "SDK Express - Transport & ShapeReporter",
         "description": "Implement the transport layer (HttpTransport, NoopTransport, TransportFactory) and ShapeReporter (buffering, deduplication, batch flushing).",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "19"
         ],
@@ -1161,13 +1164,14 @@
             ],
             "parentId": "22"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:37:55.822Z"
       },
       {
         "id": "23",
         "title": "SDK Express - Tests",
         "description": "Write unit and integration tests for all SDK Express components: pipeline, middleware, tracking, transport, reporter.",
-        "status": "pending",
+        "status": "done",
         "dependencies": [
           "20",
           "21",
@@ -1209,7 +1213,8 @@
             "dependencies": [],
             "parentId": "23"
           }
-        ]
+        ],
+        "updatedAt": "2026-04-07T05:42:30.360Z"
       },
       {
         "id": "24",
@@ -1361,9 +1366,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-04-07T05:34:07.455Z",
+      "lastModified": "2026-04-07T05:42:30.360Z",
       "taskCount": 27,
-      "completedCount": 18,
+      "completedCount": 23,
       "tags": [
         "master"
       ]
